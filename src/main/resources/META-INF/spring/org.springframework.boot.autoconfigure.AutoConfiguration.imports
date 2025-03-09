@@ -1,0 +1,3 @@
+com.elessarov.telegram_bot_spring_boot_starter.config.BotAutoConfiguration
+com.elessarov.telegram_bot_spring_boot_starter.config.BotWebhookConfiguration
+com.elessarov.telegram_bot_spring_boot_starter.config.DefaultUpdateHandlerConfiguration
