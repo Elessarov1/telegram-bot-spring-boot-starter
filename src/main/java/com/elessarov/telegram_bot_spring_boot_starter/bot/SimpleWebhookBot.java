@@ -30,7 +30,7 @@ public class SimpleWebhookBot extends SpringWebhookBot {
 
     @Override
     public String getBotPath() {
-        return botProperties.getWebhookPath();
+        return BotProperties.Webhook.DEFAULT_PATH;
     }
 
     @Override

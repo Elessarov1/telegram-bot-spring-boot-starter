@@ -17,7 +17,7 @@ import static com.elessarov.telegram_bot_spring_boot_starter.constants.Constants
 
 @Configuration
 @EnableConfigurationProperties(BotProperties.class)
-@ConditionalOnProperty(name = BOT_TYPE, havingValue = LONG_POLLING_BOT_TYPE, matchIfMissing = true)
+@ConditionalOnProperty(name = WEBHOOK_ENABLED, havingValue = "false", matchIfMissing = true)
 public class BotAutoConfiguration {
     private static final Logger log = LoggerFactory.getLogger(BotAutoConfiguration.class);
     private final BotProperties botProperties;

@@ -2,25 +2,37 @@ package com.elessarov.telegram_bot_spring_boot_starter.properties;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
-import static com.elessarov.telegram_bot_spring_boot_starter.constants.Constants.LONG_POLLING_BOT_TYPE;
-
 @ConfigurationProperties("telegram.bot")
 public class BotProperties {
-    private String type = LONG_POLLING_BOT_TYPE;
     private String name;
     private String token;
-    private String webhookPath;
-    private String webhookUrl;
+    private Webhook webhook = new Webhook();
+
 
     public BotProperties() {
     }
 
-    public String getType() {
-        return type;
-    }
+    public static class Webhook {
+        public static final String DEFAULT_PATH = "/webhook";
 
-    public void setType(String type) {
-        this.type = type;
+        private Boolean enabled;
+        private String url;
+
+        public Boolean getEnabled() {
+            return enabled;
+        }
+
+        public void setEnabled(Boolean enabled) {
+            this.enabled = enabled;
+        }
+
+        public String getUrl() {
+            return url;
+        }
+
+        public void setUrl(String url) {
+            this.url = url;
+        }
     }
 
     public String getName() {
@@ -39,19 +51,11 @@ public class BotProperties {
         this.token = token;
     }
 
-    public String getWebhookPath() {
-        return webhookPath;
+    public Webhook getWebhook() {
+        return webhook;
     }
 
-    public void setWebhookPath(String webhookPath) {
-        this.webhookPath = webhookPath;
-    }
-
-    public String getWebhookUrl() {
-        return webhookUrl;
-    }
-
-    public void setWebhookUrl(String webhookUrl) {
-        this.webhookUrl = webhookUrl;
+    public void setWebhook(Webhook webhook) {
+        this.webhook = webhook;
     }
 }

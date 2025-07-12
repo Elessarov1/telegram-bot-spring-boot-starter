@@ -1,7 +1,10 @@
 telegram:
   bot:
-    type: LongPolling
     name: ${BOT_NAME:my_bot}
     token: ${BOT_TOKEN:8179416761:AAF6V_tSYLHbW2b1zi3vrDNjes55BbLnVGg}
-    webhook-path: /webhook
-    webhook-url: ${WEBHOOK_URL:https://f1da-66-151-43-46.ngrok-free.app}/${telegram.bot.webhook-path}
+    webhook:
+      enabled: true
+      url: ${WEBHOOK_URL:https://f1da-66-151-43-46.ngrok-free.app}/${telegram.bot.webhook-path}
+
+
+

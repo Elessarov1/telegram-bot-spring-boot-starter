@@ -9,15 +9,15 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 
-import static com.elessarov.telegram_bot_spring_boot_starter.constants.Constants.UPDATE_HANDLER_BEAN_MISSING;
-
 @Configuration
 public class DefaultUpdateHandlerConfiguration {
+    public static final String UPDATE_HANDLER_BEAN_MISSING = "Update received but your UpdateHandler bean is not configured";
+
     private final Logger log = LoggerFactory.getLogger(DefaultUpdateHandlerConfiguration.class);
 
     @Bean
     @ConditionalOnMissingBean(UpdateHandler.class)
-    public UpdateHandler defaultUpdateHandler() {
+    public UpdateHandler noOpUpdateHandler() {
         return update -> {
             log.info(UPDATE_HANDLER_BEAN_MISSING);
             return new SendMessage(BotUtils.getChatId(update), UPDATE_HANDLER_BEAN_MISSING);

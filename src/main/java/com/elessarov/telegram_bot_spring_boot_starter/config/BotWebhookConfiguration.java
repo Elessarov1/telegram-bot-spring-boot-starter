@@ -15,8 +15,7 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.starter.SpringWebhookBot;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 
-import static com.elessarov.telegram_bot_spring_boot_starter.constants.Constants.BOT_TYPE;
-import static com.elessarov.telegram_bot_spring_boot_starter.constants.Constants.WEBHOOK_BOT_TYPE;
+import static com.elessarov.telegram_bot_spring_boot_starter.constants.Constants.WEBHOOK_ENABLED;
 
 @Configuration
 @EnableConfigurationProperties(BotProperties.class)
@@ -29,16 +28,16 @@ public class BotWebhookConfiguration {
     }
 
     @Bean
-    @ConditionalOnProperty(name = BOT_TYPE, havingValue = WEBHOOK_BOT_TYPE)
+    @ConditionalOnProperty(name = WEBHOOK_ENABLED, havingValue = "true")
     public SetWebhook setWebhook() {
-        log.info("Setting webhook on {}", botProperties.getWebhookUrl());
+        log.info("Setting webhook on {}", botProperties.getWebhook().getUrl());
         return SetWebhook.builder()
-                .url(botProperties.getWebhookUrl())
+                .url(botProperties.getWebhook().getUrl())
                 .build();
     }
 
     @Bean
-    @ConditionalOnProperty(name = BOT_TYPE, havingValue = WEBHOOK_BOT_TYPE)
+    @ConditionalOnProperty(name = WEBHOOK_ENABLED, havingValue = "true")
     public SimpleWebhookBot webhookBot(
             BotProperties botProperties,
             SetWebhook setWebhook,
@@ -49,7 +48,7 @@ public class BotWebhookConfiguration {
     }
 
     @Bean
-    @ConditionalOnProperty(name = BOT_TYPE, havingValue = WEBHOOK_BOT_TYPE)
+    @ConditionalOnProperty(name = WEBHOOK_ENABLED, havingValue = "true")
     public TelegramBotsApi telegramWebhookBotsApi(SpringWebhookBot webhookBot, SetWebhook setWebhook) throws TelegramApiException {
         TelegramBotsApi botsApi = new TelegramBotsApi(DefaultBotSession.class);
         botsApi.registerBot(webhookBot, setWebhook);

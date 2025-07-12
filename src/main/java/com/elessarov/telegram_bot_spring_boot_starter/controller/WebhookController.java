@@ -1,6 +1,7 @@
 package com.elessarov.telegram_bot_spring_boot_starter.controller;
 
 import com.elessarov.telegram_bot_spring_boot_starter.bot.SimpleWebhookBot;
+import com.elessarov.telegram_bot_spring_boot_starter.properties.BotProperties;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -18,7 +19,7 @@ import static com.elessarov.telegram_bot_spring_boot_starter.constants.Constants
 
 @RestController
 @RequestMapping("${telegram.bot.webhook-path}")
-@ConditionalOnProperty(name = BOT_TYPE, havingValue = WEBHOOK_BOT_TYPE)
+@ConditionalOnProperty(name = WEBHOOK_ENABLED, havingValue = "true")
 public class WebhookController {
     private final SimpleWebhookBot webhookBot;
 
@@ -26,7 +27,7 @@ public class WebhookController {
         this.webhookBot = webhookBot;
     }
 
-    @PostMapping
+    @PostMapping(BotProperties.Webhook.DEFAULT_PATH)
     public ResponseEntity<BotApiMethod<?>> onUpdateReceived(@RequestBody Update update) {
         BotApiMethod<?> response = webhookBot.onWebhookUpdateReceived(update);
         return ResponseEntity.ok(response);
@@ -47,8 +48,8 @@ public class WebhookController {
      *
      * @return Telegram API response as a String.
      */
-    @PutMapping
-    public ResponseEntity<String> updateWebhook() {
+    @PutMapping("/setWebhook")
+    public ResponseEntity<String> setWebhook() {
         SetWebhook setWebhook = webhookBot.getSetWebhook();
         String token = setWebhook.getSecretToken();
         String webhookUrl = setWebhook.getUrl();
