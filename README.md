@@ -32,7 +32,7 @@ repositories {
 
 You can find your artifacts on JitPack at:
 
-> https://jitpack.io/#elessarov/telegram-bot-spring-boot-starter
+> https://jitpack.io/#Elessarov1/telegram-bot-spring-boot-starter
 
 #### Maven
 ```xml
