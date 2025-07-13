@@ -9,7 +9,7 @@ version = '1.0.1'
 
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(17)
+        languageVersion = JavaLanguageVersion.of(21)
     }
 }
 
@@ -38,9 +38,10 @@ publishing {
 }
 
 dependencies {
-    implementation 'org.springframework.boot:spring-boot-autoconfigure'
-    implementation 'org.springframework.boot:spring-boot-configuration-processor'
-    implementation 'org.telegram:telegrambots-spring-boot-starter:6.9.7.1'
+    api 'org.springframework.boot:spring-boot-autoconfigure'
+    api 'org.springframework.boot:spring-boot-configuration-processor'
+    api 'org.telegram:telegrambots-spring-boot-starter:6.9.7.1'
+    api 'org.springframework.boot:spring-boot-starter'
 
     compileOnly 'org.springframework.boot:spring-boot-starter-web'
 

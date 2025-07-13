@@ -17,7 +17,7 @@ This is a Spring Boot starter that simplifies the integration of Telegram bots i
 #### Gradle
 ```groovy
 dependencies {
-    implementation 'com.elessarov:telegram-bot-spring-boot-starter:1.0.0'
+    implementation 'com.elessarov:telegram-bot-spring-boot-starter:{version}'
     // For webhook functionality, ensure you include the web dependency in your project:
     implementation 'org.springframework.boot:spring-boot-starter-web'
 }
@@ -28,7 +28,7 @@ dependencies {
 <dependency>
     <groupId>com.elessarov</groupId>
     <artifactId>telegram-bot-spring-boot-starter</artifactId>
-    <version>1.0.0</version>
+    <version>{version}</version>
 </dependency>
 <!-- For webhook functionality, add this dependency to your project -->
 <dependency>
@@ -42,11 +42,11 @@ dependencies {
 ```yaml
 telegram:
   bot:
-    type: LongPolling # or Webhook
     name: YourBotName
     token: your_telegram_bot_token
-    webhook-path: /webhook
-    webhook-url: https://your-public-url/webhook
+    webhook:
+      enabled: true
+      url: https://your-telegram-bot-url
 
 ```
 
@@ -61,13 +61,10 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 public class MyUpdateHandler implements UpdateHandler {
     @Override
     public SendMessage handle(Update update) {
-        SendMessage message = new SendMessage();
-        // For example, echo back the received text:
-        if (update.hasMessage() && update.getMessage().hasText()) {
-            message.setChatId(String.valueOf(update.getMessage().getChatId()));
-            message.setText("Echo: " + update.getMessage().getText());
+        if (isTextMessage(update)) {
+            return new SendMessage(BotUtils.getChatId(update), "Got you message - '%s'".formatted(update.getMessage().getText()));
         }
-        return message;
+        return null;
     }
 }
 ```

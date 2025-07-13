@@ -4,7 +4,7 @@ telegram:
     token: ${BOT_TOKEN:8179416761:AAF6V_tSYLHbW2b1zi3vrDNjes55BbLnVGg}
     webhook:
       enabled: true
-      url: ${WEBHOOK_URL:https://f1da-66-151-43-46.ngrok-free.app}/${telegram.bot.webhook-path}
+      url: ${WEBHOOK_URL}/webhook
 
 
 
