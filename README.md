@@ -18,7 +18,7 @@ This is a Spring Boot starter that simplifies integration of Telegram bots into 
 #### Gradle
 ```groovy
 dependencies {
-    implementation 'com.elessarov:telegram-bot-spring-boot-starter:1.0.2'
+    implementation 'com.github.Elessarov1:telegram-bot-spring-boot-starter:1.0.3'
 }
 ```
 
@@ -37,9 +37,9 @@ You can find your artifacts on JitPack at:
 #### Maven
 ```xml
 <dependency>
-    <groupId>com.elessarov</groupId>
+    <groupId>com.github.Elessarov1</groupId>
     <artifactId>telegram-bot-spring-boot-starter</artifactId>
-    <version>1.0.2</version>
+    <version>1.0.3</version>
 </dependency>
 ```
 
