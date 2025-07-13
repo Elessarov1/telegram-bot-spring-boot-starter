@@ -1,9 +1,9 @@
 telegram:
   bot:
-    name: ${BOT_NAME:my_bot}
-    token: ${BOT_TOKEN:8179416761:AAF6V_tSYLHbW2b1zi3vrDNjes55BbLnVGg}
+    name: ${BOT_NAME}
+    token: ${BOT_TOKEN}
     webhook:
-      enabled: true
+      enabled: ${WEBHOOK_ENABLED}
       url: ${WEBHOOK_URL}/webhook
 
 

@@ -1,6 +1,6 @@
 # Telegram Bot Spring Boot Starter
 
-This is a Spring Boot starter that simplifies the integration of Telegram bots into your Spring Boot applications. The starter supports two types of bots:
+This is a Spring Boot starter that simplifies integration of Telegram bots into your Spring Boot applications. The starter supports two types of bots:
 - **Long Polling Bot** (default)
 - **Webhook Bot**
 
@@ -8,7 +8,8 @@ This is a Spring Boot starter that simplifies the integration of Telegram bots i
 
 - **Easy Configuration:** Automatically configure your bot using application properties.
 - **Update Handling:** Delegate update processing by implementing the `UpdateHandler` interface.
-- **Utility Methods:** Use built-in utility methods (in `BotUtils`) for common Telegram API tasks like adding keyboards, retrieving chat IDs, etc.
+- **Utility Methods (`BotUtils`):** Common Telegram API helpers for chat IDs, keyboards, commands, etc.
+- **Default Update Handler:** A no‑op implementation to log and respond when no custom `UpdateHandler` is provided.
 
 ## Getting Started
 
@@ -17,96 +18,154 @@ This is a Spring Boot starter that simplifies the integration of Telegram bots i
 #### Gradle
 ```groovy
 dependencies {
-    implementation 'com.elessarov:telegram-bot-spring-boot-starter:{version}'
-    // For webhook functionality, ensure you include the web dependency in your project:
-    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'com.elessarov:telegram-bot-spring-boot-starter:1.0.2'
 }
 ```
 
-#### Maven 
-```maven
+If you're using **JitPack**, add its repository at the top of your `build.gradle`:
+```groovy
+repositories {
+    mavenCentral()
+    maven { url 'https://jitpack.io' }
+}
+```
+
+You can find your artifacts on JitPack at:
+
+> https://jitpack.io/#elessarov/telegram-bot-spring-boot-starter
+
+#### Maven
+```xml
 <dependency>
     <groupId>com.elessarov</groupId>
     <artifactId>telegram-bot-spring-boot-starter</artifactId>
-    <version>{version}</version>
-</dependency>
-<!-- For webhook functionality, add this dependency to your project -->
-<dependency>
-    <groupId>org.springframework.boot</groupId>
-    <artifactId>spring-boot-starter-web</artifactId>
+    <version>1.0.2</version>
 </dependency>
 ```
 
-### 2. Configuration
-- **Define your Telegram bot properties in your application.yml (or application.properties):**
+For JitPack with Maven, add to your `pom.xml`:
+```xml
+<repositories>
+  <repository>
+    <id>jitpack.io</id>
+    <url>https://jitpack.io</url>
+  </repository>
+</repositories>
+```
+
+### 2. Configuration Configuration
+
+Define your Telegram bot properties in `application.yml` or `application.properties`:
+
 ```yaml
 telegram:
   bot:
     name: YourBotName
     token: your_telegram_bot_token
     webhook:
-      enabled: true
-      url: https://your-telegram-bot-url
+      enabled: true          # set to false for long polling
+      url: https://your-domain.com/telegram/webhook
+``` 
 
-```
+### 3. Implement UpdateHandler
 
-### 3. Customizing Update Handling
-- **To implement your business logic, simply create a bean that implements the UpdateHandler interface:**
+Create a Spring bean implementing `UpdateHandler` to handle incoming updates:
+
 ```java
-import org.springframework.stereotype.Component;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.api.objects.Update;
-
 @Component
 public class MyUpdateHandler implements UpdateHandler {
     @Override
     public SendMessage handle(Update update) {
         if (isTextMessage(update)) {
-            return new SendMessage(BotUtils.getChatId(update), "Got you message - '%s'".formatted(update.getMessage().getText()));
+            String text = update.getMessage().getText();
+            String chatId = BotUtils.getChatId(update);
+            return new SendMessage(chatId, "You said: '" + text + "'");
         }
         return null;
     }
 }
 ```
-If you do not provide an UpdateHandler bean, a default one will be used that logs the update but performs no further action.
 
-### 4. Utility Methods
-The starter provides a set of utility methods in the BotUtils class for common operations, such as:
-* Retrieving chat IDs.
-* Adding inline or reply keyboards.
-* Removing keyboards from messages.
-* etc
+If no `UpdateHandler` bean is defined, a default no‑op handler will log a warning and reply with a fixed message.
 
-For example, to add an inline keyboard with a custom number of buttons per row:
+---
+
+## Utility Methods (`BotUtils`)
+
+Below are the available helper methods in `BotUtils`, along with a brief description and usage example for each.
+
+### `getChatId(Update update)`
+Retrieves the chat ID of a message update as a `String`.
+
 ```java
-List<Button> buttons = Arrays.asList(
-    new Button("Button1", "callbackData1"),
-    new Button("Button2", "callbackData2"),
-    new Button("Button3", "callbackData3")
-);
+String chatId = BotUtils.getChatId(update);
+```
 
-SendMessage sendMessage = new SendMessage();
-sendMessage.setText("Choose an option");
+### `getCallbackChatId(Update update)`
+Retrieves the chat ID from a callback query update.
+
+```java
+String callbackChatId = BotUtils.getCallbackChatId(update);
+```
+
+### `getUserNameFromCallback(Update update)`
+Gets the username of the user who triggered a callback query.
+
+```java
+String userName = BotUtils.getUserNameFromCallback(update);
+```
+
+### `addInlineKeyBoard(SendMessage sendMessage, List<Button> buttons, int buttonsPerRow)`
+Adds an inline keyboard to the provided `SendMessage`, arranging buttons into rows of the specified size. Throws `RuntimeException` if any button text exceeds 30 characters.
+
+```java
+List<Button> buttons = List.of(
+        new Button("Yes", "yes_cb"),
+        new Button("No",  "no_cb")
+);
 BotUtils.addInlineKeyBoard(sendMessage, buttons, 2);
 ```
 
-### 5. License and Third-Party Notices
-This project is licensed under the MIT License – see the [LICENSE](LICENSE.md) file for details.
+### `addKeyBoard(SendMessage sendMessage, List<String> labels, int buttonsPerRow)`
+Adds a reply keyboard (custom markup) with text buttons arranged per row.
 
-Third-Party Dependency:
-
-This starter uses [telegrambots-spring-boot-starter](https://github.com/rubenlagus/TelegramBots)  version **6.9.7.1**, which is licensed under the MIT License. The original license and copyright:
+```java
+List<String> keys = List.of("A", "B", "C");
+BotUtils.addKeyBoard(sendMessage, keys, 2);
 ```
-MIT License
 
-Copyright (c) 2016 Ruben Bermudez
+### `removeKeyboard(SendMessage sendMessage)`
+Removes any visible keyboard by setting a `ReplyKeyboardRemove` markup.
 
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software...
+```java
+BotUtils.removeKeyboard(sendMessage);
 ```
-For full details, please refer to the dependency's repository.
+
+### `setCommands(AbsSender bot, List<BotCommand> commands)`
+Sets the bot’s command menu using the `SetMyCommands` Telegram API call. No action if `commands` is null or empty.
+
+```java
+List<BotCommand> commands = List.of(
+        new BotCommand("start", "Start the bot"),
+        new BotCommand("help",  "Show help message")
+);
+BotUtils.setCommands(bot, commands);
+```
+
+---
+
+## License and Third-Party Notices
+
+This project is licensed under the MIT License – see [LICENSE](LICENSE.md) for details.
+
+**Third‑Party Dependency:** Uses [telegrambots-spring-boot-starter](https://github.com/rubenlagus/TelegramBots) v6.9.7.1 (MIT License).
+
+---
 
 ## Contributing
-Contributions are welcome! Please follow standard GitHub practices (fork, pull request, etc.) for contributing to this project.
+
+Contributions are welcome! Fork the repo, create a feature branch, push your changes and open a pull request.
 
 ## Disclaimer
-This project is provided "as is", without warranty of any kind. The authors are not liable for any damages or issues arising from the use of this software.
+
+Provided "as is" without warranty. The authors are not liable for any damages arising from use.
