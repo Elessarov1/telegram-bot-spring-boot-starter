@@ -18,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class BotUtilsTest {
 
     @Test
-    void testGetChatId() {
+    void getChatId_whenMessageWithChat_thenReturnsChatIdAsString() {
         Chat chat = new Chat();
         chat.setId(123456789L);
 
@@ -33,7 +33,7 @@ class BotUtilsTest {
     }
 
     @Test
-    void testGetCallbackChatIdAndUserNameFromCallback() {
+    void getCallbackChatId_whenCallbackQueryWithMessage_thenReturnsChatIdAsString() {
         Chat chat = new Chat();
         chat.setId(987654321L);
 
@@ -51,14 +51,25 @@ class BotUtilsTest {
         update.setCallbackQuery(callbackQuery);
 
         String callbackChatId = BotUtils.getCallbackChatId(update);
-        String userName = BotUtils.getUserNameFromCallback(update);
-
         assertEquals("987654321", callbackChatId);
+    }
+
+    @Test
+    void getUserNameFromCallback_whenCallbackQueryWithUser_thenReturnsUserName() {
+        CallbackQuery callbackQuery = new CallbackQuery();
+        User user = new User();
+        user.setUserName("testUser");
+        callbackQuery.setFrom(user);
+
+        Update update = new Update();
+        update.setCallbackQuery(callbackQuery);
+
+        String userName = BotUtils.getUserNameFromCallback(update);
         assertEquals("testUser", userName);
     }
 
     @Test
-    void testAddInlineKeyBoard() {
+    void addInlineKeyBoard_whenButtonsProvided_thenCreatesInlineKeyboardRows() {
         SendMessage sendMessage = new SendMessage();
         sendMessage.setText("Test message");
 
@@ -72,15 +83,15 @@ class BotUtilsTest {
 
         assertNotNull(sendMessage.getReplyMarkup());
         assertInstanceOf(InlineKeyboardMarkup.class, sendMessage.getReplyMarkup());
-
         InlineKeyboardMarkup markup = (InlineKeyboardMarkup) sendMessage.getReplyMarkup();
+
         assertEquals(2, markup.getKeyboard().size());
         assertEquals(2, markup.getKeyboard().get(0).size());
         assertEquals(1, markup.getKeyboard().get(1).size());
     }
 
     @Test
-    void testAddKeyBoard() {
+    void addKeyBoard_whenTextButtonsProvided_thenCreatesReplyKeyboardRows() {
         SendMessage sendMessage = new SendMessage();
         sendMessage.setText("Test message");
 
@@ -90,20 +101,18 @@ class BotUtilsTest {
 
         assertNotNull(sendMessage.getReplyMarkup());
         assertInstanceOf(ReplyKeyboardMarkup.class, sendMessage.getReplyMarkup());
-
         ReplyKeyboardMarkup markup = (ReplyKeyboardMarkup) sendMessage.getReplyMarkup();
-        List<KeyboardRow> rows = markup.getKeyboard();
 
+        List<KeyboardRow> rows = markup.getKeyboard();
         assertEquals(2, rows.size());
         assertEquals(3, rows.get(0).size());
         assertEquals(2, rows.get(1).size());
     }
 
     @Test
-    void testRemoveKeyboard() {
+    void removeKeyboard_whenExistingKeyboard_thenReplacesWithReplyKeyboardRemove() {
         SendMessage sendMessage = new SendMessage();
         sendMessage.setText("Test message");
-
         sendMessage.setReplyMarkup(new ReplyKeyboardMarkup());
 
         BotUtils.removeKeyboard(sendMessage);
