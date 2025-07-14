@@ -154,6 +154,9 @@ BotUtils.setCommands(bot, commands);
 
 ---
 
+## Video Guide
+A [video guide](https://youtu.be/-phSReTM-XE?si=u_mE0yll4DIRZC9F) is available on YouTube. Please note: the video is in Russian language only.
+
 ## License and Third-Party Notices
 
 This project is licensed under the MIT License – see [LICENSE](LICENSE.md) for details.
