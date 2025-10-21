@@ -29,6 +29,7 @@ repositories {
     maven { url 'https://jitpack.io' }
 }
 ```
+[![](https://jitpack.io/v/Elessarov1/telegram-bot-spring-boot-starter.svg)](https://jitpack.io/#Elessarov1/telegram-bot-spring-boot-starter)
 
 You can find your artifacts on JitPack at:
 
